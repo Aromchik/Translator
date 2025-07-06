@@ -3,64 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Translator</title>
+    <title>Image Translator Pro</title>
     <!-- Подключаем CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Иконки (можно использовать Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Шапка сайта -->
-    <header>
-        <div class="logo">
-            <img src="https://via.placeholder.com/50" alt="Логотип">  <!-- Замени на свой лого -->
-            <h1>Image Translator</h1>
+    <header class="header">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Логотип" class="logo">
+            <h1>Image Translator Pro</h1>
+        </div>
+        <div class="header-actions">
+            <button id="history-toggle" class="btn-icon" onclick="toggleHistory()">
+                <i class="fas fa-history"></i> История
+            </button>
         </div>
     </header>
 
     <!-- Основное содержимое -->
-    <main>
-        <div class="container">
-            <h2>Загрузите изображение для перевода</h2>
+    <main class="main-content">
+        <!-- Блок загрузки и перевода -->
+        <section class="translation-section">
+            <div class="container">
+                <h2><i class="fas fa-language"></i> Переводчик текста с изображений</h2>
+                
+                <form action="/" method="post" enctype="multipart/form-data" class="upload-form">
+                    <!-- Превью изображения -->
+                    <div class="image-preview" id="image-preview">
+                        <i class="fas fa-image preview-icon"></i>
+                        <span class="preview-text">Превью изображения</span>
+                        <img id="preview-image" src="#" alt="Ваше изображение" style="display: none;">
+                    </div>
+                    
+                    <!-- Поле для выбора файла -->
+                    <div class="form-group">
+                        <label for="image-input" class="file-upload-btn">
+                            <i class="fas fa-cloud-upload-alt"></i> Выберите изображение
+                            <input type="file" id="image-input" name="image" accept="image/*" required>
+                        </label>
+                    </div>
 
-            <!-- Форма для загрузки изображения -->
-            <form action="/" method="post" enctype="multipart/form-data">
-                <!-- Поле для выбора файла -->
-                <div class="upload-area">
-                    <input type="file" id="image-input" name="image" accept="image/*" required>
-                    <label for="image-input">Выберите файл</label>
+                    <!-- Выбор языка -->
+                    <div class="form-group">
+                        <label for="language"><i class="fas fa-globe"></i> Язык перевода:</label>
+                        <select name="language" id="language" class="language-select">
+                            <option value="russian">Русский</option>
+                            <option value="english">Английский</option>
+                            <option value="french">Французский</option>
+                            <option value="german">Немецкий</option>
+                            <option value="spanish">Испанский</option>
+                        </select>
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-exchange-alt"></i> Перевести
+                    </button>
+                </form>
+
+                <!-- Блок с результатом перевода -->
+                <div class="result-container" id="result">
+                    {% if translation %}
+                    <div class="result-card">
+                        <h3><i class="fas fa-comment-dots"></i> Результат перевода:</h3>
+                        <div class="result-text">{{ translation }}</div>
+                    </div>
+                    {% endif %}
                 </div>
-
-                <!-- Выбор языка -->
-                <div class="language-selector">
-                    <label for="language">Язык перевода:</label>
-                    <select name="language" id="language">
-                        <option value="en">Английский</option>
-                        <option value="es">Испанский</option>
-                        <option value="fr">Французский</option>
-                        <option value="de">Немецкий</option>
-                        <option value="ru">Русский</option>
-                    </select>
-                </div>
-
-                <!-- Кнопка отправки -->
-                <button type="submit">Перевести</button>
-            </form>
-
-            <!-- Блок с результатом перевода -->
-            <div class="result" id="result">
-                {% if translation %}  <!-- Если есть перевод, выводим его -->
-                    <h3>Перевод:</h3>
-                    <p>{{ translation }}</p>
-                {% endif %}
             </div>
-        </div>
+        </section>
+
+        <!-- Блок истории переводов (скрыт по умолчанию) -->
+        <aside class="history-sidebar" id="history-sidebar" style="display: none;">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-history"></i> История переводов</h3>
+                <button class="btn-icon" onclick="toggleHistory()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="history-list">
+                {% for item in history %}
+                <a href="/history/{{ item.id }}" class="history-item-link">
+                    <div class="history-item">
+                        <div class="history-item-header">
+                            <span class="history-date">
+                                <i class="far fa-clock"></i> {{ item.date.strftime('%d.%m.%Y %H:%M') }}
+                            </span>
+                        </div>
+                        <div class="history-content">
+                            <p class="original-text">
+                                <strong>Оригинал:</strong> {{ item.original_text|truncate(50) }}
+                            </p>
+                            <p class="translated-text">
+                                <strong>Перевод:</strong> {{ item.translated_text|truncate(50) }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                {% else %}
+                <div class="empty-history">
+                    <i class="far fa-folder-open"></i>
+                    <p>История переводов пуста</p>
+                </div>
+                {% endfor %}
+            </div>
+        </aside>
     </main>
 
     <!-- Подвал сайта -->
-    <footer>
-        <p>© 2024 Image Translator. Все права защищены.</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2024 Image Translator Pro. Все права защищены.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
     </footer>
 
-    <!-- Подключаем JavaScript (если нужен) -->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- Простой JavaScript для открытия/закрытия истории -->
+    <script>
+        function toggleHistory() {
+            const sidebar = document.getElementById('history-sidebar');
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'block';
+            } else {
+                sidebar.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
