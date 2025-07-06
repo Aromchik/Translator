@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Translator</title>
+    <!-- Подключаем CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="logo">
+            <img src="https://via.placeholder.com/50" alt="Логотип">  <!-- Замени на свой лого -->
+            <h1>Image Translator</h1>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main>
+        <div class="container">
+            <h2>Загрузите изображение для перевода</h2>
+
+            <!-- Форма для загрузки изображения -->
+            <form action="/" method="post" enctype="multipart/form-data">
+                <!-- Поле для выбора файла -->
+                <div class="upload-area">
+                    <input type="file" id="image-input" name="image" accept="image/*" required>
+                    <label for="image-input">Выберите файл</label>
+                </div>
+
+                <!-- Выбор языка -->
+                <div class="language-selector">
+                    <label for="language">Язык перевода:</label>
+                    <select name="language" id="language">
+                        <option value="en">Английский</option>
+                        <option value="es">Испанский</option>
+                        <option value="fr">Французский</option>
+                        <option value="de">Немецкий</option>
+                        <option value="ru">Русский</option>
+                    </select>
+                </div>
+
+                <!-- Кнопка отправки -->
+                <button type="submit">Перевести</button>
+            </form>
+
+            <!-- Блок с результатом перевода -->
+            <div class="result" id="result">
+                {% if translation %}  <!-- Если есть перевод, выводим его -->
+                    <h3>Перевод:</h3>
+                    <p>{{ translation }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Подвал сайта -->
+    <footer>
+        <p>© 2024 Image Translator. Все права защищены.</p>
+    </footer>
+
+    <!-- Подключаем JavaScript (если нужен) -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
