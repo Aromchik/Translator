@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Translator Pro</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon.png">
+
     <!-- Подключаем CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Иконки (можно использовать Font Awesome) -->
@@ -31,12 +34,6 @@
                 <h2><i class="fas fa-language"></i> Переводчик текста с изображений</h2>
                 
                 <form action="/" method="post" enctype="multipart/form-data" class="upload-form">
-                    <!-- Превью изображения -->
-                    <div class="image-preview" id="image-preview">
-                        <i class="fas fa-image preview-icon"></i>
-                        <span class="preview-text">Превью изображения</span>
-                        <img id="preview-image" src="#" alt="Ваше изображение" style="display: none;">
-                    </div>
                     
                     <!-- Поле для выбора файла -->
                     <div class="form-group">
