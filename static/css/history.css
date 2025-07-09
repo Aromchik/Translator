@@ -151,3 +151,22 @@ footer {
 .history-link:hover svg {
     transform: translateX(-3px);
 }
+
+.delete-form {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.delete-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    vertical-align: middle;
+    color: #888;
+    transition: color 0.3s;
+}
+
+.delete-btn:hover {
+    color: #e00;
+}

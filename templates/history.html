@@ -27,29 +27,36 @@
             <h2>История переводов</h2>
 
             {% if translations_table %}
-                <div class="history-cards">
-                    {% for row in translations_table %}
-                        <div class="history-card">
-                            <div class="card-header">
-                                <span class="lang-badge">{{ row[0] }}</span>  <!-- lang -->
-                                <span class="date">{{ row[3] }}</span>  <!-- created_at -->
-                            </div>
-                            <div class="card-content">
-                                <div class="original">
-                                    <h4>Исходный текст</h4>
-                                    <p>{{ row[1] }}</p>  <!-- text_before -->
-                                </div>
-                                <div class="translation">
-                                    <h4>Перевод</h4>
-                                    <p>{{ row[2] }}</p>  <!-- text_after -->
-                                </div>
-                            </div>
+                <div class="history-card">
+                     {% for row in translations_table %}
+                    <div class="card-header">
+                        <span class="lang-badge">{{ row[1] }}</span>  <!-- lang -->
+                        <span class="date">{{ row[4] }}</span>  <!-- created_at -->
+                        <!-- Кнопка удаления -->
+                        <form method="POST" action="{{ url_for('delete_translation', id=row[0]) }}" class="delete-form">
+                            <button type="submit" title="Удалить перевод" class="delete-btn">
+                                <!-- Иконка урны -->
+                                 <!-- Красивая иконка урны -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M3 6h18v2H3V6zm2 3h14v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9zm3 2v8h2v-8H8zm4 0v8h2v-8h-2zM9 4h6v2H9V4z"/>
+                                    </svg>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card-content">
+                        <div class="original">
+                            <h4>Исходный текст</h4>
+                            <p>{{ row[2] }}</p>  <!-- text_before -->
                         </div>
+                        <div class="translation">
+                            <h4>Перевод</h4>
+                            <p>{{ row[3] }}</p>  <!-- text_after -->
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
             {% else %}
                 <div class="empty-state">
-                    <img src="https://via.placeholder.com/150" alt="Пусто">
                     <p>История переводов пуста</p>
                 </div>
             {% endif %}
@@ -57,7 +64,7 @@
     </main>
 
     <footer>
-        <p>© 2024 Image Translator. Все права защищены</p>
+        <p>© 2024 Image Translator. Все права защищены)</p>
     </footer>
 </body>
 </html>

@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, redirect
 import easyocr
 import google.generativeai as genai
 import mysql.connector
 import os
+import uuid
 
 import config
 from config import DB_CONFIG
@@ -22,9 +23,11 @@ def main():
 
         file= request.files['image']
         filename = file.filename
+        ext = os.path.splitext(filename)[1]  # расширение файла, включая точку
+        unique_filename = f"{uuid.uuid4().hex}{ext}"  # уникальное имя, например "4f3b9a2d8c7e4a1b8f3d.png"
         UPLOAD_FOLDER = 'uploads'
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-        filepath= os.path.join(UPLOAD_FOLDER, filename) # os.path.join склеивает в единый путь, с учётом операционной системы
+        filepath= os.path.join(UPLOAD_FOLDER, unique_filename) # os.path.join склеивает в единый путь, с учётом операционной системы
         file.save(filepath)
 
         photo_path = filepath.replace("\\", "/")  # для Windows
@@ -59,6 +62,31 @@ def history():
     conn.close()
 
     return render_template('history.html', translations_table=translations_table)
+
+
+@app.route('/delete/<int:id>', methods=['POST'])
+def delete_translation(id):
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+
+    # Получаем путь к файлу
+    cursor.execute('SELECT photo_path FROM users WHERE id = %s', (id,))
+    result = cursor.fetchone()
+
+    if result:
+        photo_path = result[0]
+        # Удаляем запись из базы
+        cursor.execute('DELETE FROM users WHERE id = %s', (id,))
+        conn.commit()
+
+        # Удаляем файл, если он существует
+        if os.path.exists(photo_path):
+            os.remove(photo_path)
+
+    cursor.close()
+    conn.close()
+    return redirect(url_for('history'))
+
 
 
 
