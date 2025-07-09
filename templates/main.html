@@ -4,63 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Translator</title>
-    <!-- Подключаем CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
-    <!-- Шапка сайта -->
     <header>
         <div class="logo">
-            <img src="https://via.placeholder.com/50" alt="Логотип">  <!-- Замени на свой лого -->
-            <h1>Image Translator</h1>
+            <img src="https://via.placeholder.com/50" alt="Логотип">
+            <h1>Переводчик с изображений</h1>
         </div>
+        <nav class="header-nav">
+            <a href="/history" title="История переводов" class="history-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 22c5.421 0 10-4.579 10-10S17.421 2 12 2 2 6.579 2 12s4.579 10 10 10zm0-18c4.411 0 8 3.589 8 8 0 4.409-3.589 8-8 8-4.41 0-8-3.591-8-8 0-4.411 3.59-8 8-8zm-.5 4v5l4.25 2.52.75-1.23-3.5-2.08V8z"/>
+                </svg>
+                <span>История</span>
+            </a>
+        </nav>
     </header>
 
-    <!-- Основное содержимое -->
     <main>
         <div class="container">
-            <h2>Загрузите изображение для перевода</h2>
+            <div class="upload-card">
+                <h2>Загрузите изображение с текстом для перевода</h2>
 
-            <!-- Форма для загрузки изображения -->
-            <form action="/" method="post" enctype="multipart/form-data">
-                <!-- Поле для выбора файла -->
-                <div class="upload-area">
-                    <input type="file" id="image-input" name="image" accept="image/*" required>
-                    <label for="image-input">Выберите файл</label>
-                </div>
 
-                <!-- Выбор языка -->
-                <div class="language-selector">
-                    <label for="language">Язык перевода:</label>
-                    <select name="language" id="language">
-                        <option value="en">Английский</option>
-                        <option value="es">Испанский</option>
-                        <option value="fr">Французский</option>
-                        <option value="de">Немецкий</option>
-                        <option value="ru">Русский</option>
-                    </select>
-                </div>
+                <form action="/" method="post" enctype="multipart/form-data">
+                    <div class="upload-area" id="upload-area">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#6200ee" viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <p>Перетащите изображение сюда или</p>
+                        <input type="file" id="image-input" name="image" accept="image/*" required>
+                        <label for="image-input" class="btn-primary">Выберите файл</label>
+                        <span id="file-name"></span>
+                    </div>
 
-                <!-- Кнопка отправки -->
-                <button type="submit">Перевести</button>
-            </form>
+                    <div class="form-group">
+                        <label for="language">Язык перевода:</label>
+                        <select name="language" id="language">
+                            <option value="en">Английский</option>
+                            <option value="es">Испанский</option>
+                            <option value="fr">Французский</option>
+                            <option value="de">Немецкий</option>
+                            <option value="ru">Русский</option>
+                        </select>
+                    </div>
 
-            <!-- Блок с результатом перевода -->
-            <div class="result" id="result">
-                {% if translation %}  <!-- Если есть перевод, выводим его -->
-                    <h3>Перевод:</h3>
-                    <p>{{ translation }}</p>
-                {% endif %}
+                    <button type="submit" class="btn-primary full-width">
+                        <span>Перевести</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24">
+                            <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                        </svg>
+                    </button>
+                </form>
             </div>
+
+            {% if translation %}
+                <div class="result-card">
+                    <h3>Результат перевода</h3>
+                    <div class="translation-text">
+                        {{ translation }}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </main>
 
-    <!-- Подвал сайта -->
     <footer>
-        <p>© 2024 Image Translator. Все права защищены.</p>
+        <p>© 2024 Image Translator. Все права защищены</p>
     </footer>
 
-    <!-- Подключаем JavaScript (если нужен) -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

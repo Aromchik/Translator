@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История переводов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://via.placeholder.com/50" alt="Логотип">
+            <h1>Переводчик с изображений</h1>
+        </div>
+        <nav class="header-nav">
+            <a href="/" title="Назад к переводу" class="history-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+                <span>Назад к переводу</span>
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>История переводов</h2>
+
+            {% if translations_table %}
+                <div class="history-cards">
+                    {% for row in translations_table %}
+                        <div class="history-card">
+                            <div class="card-header">
+                                <span class="lang-badge">{{ row[0] }}</span>  <!-- lang -->
+                                <span class="date">{{ row[3] }}</span>  <!-- created_at -->
+                            </div>
+                            <div class="card-content">
+                                <div class="original">
+                                    <h4>Исходный текст</h4>
+                                    <p>{{ row[1] }}</p>  <!-- text_before -->
+                                </div>
+                                <div class="translation">
+                                    <h4>Перевод</h4>
+                                    <p>{{ row[2] }}</p>  <!-- text_after -->
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <img src="https://via.placeholder.com/150" alt="Пусто">
+                    <p>История переводов пуста</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 Image Translator. Все права защищены</p>
+    </footer>
+</body>
+</html>
