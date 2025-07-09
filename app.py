@@ -88,6 +88,39 @@ def delete_translation(id):
     return redirect(url_for('history'))
 
 
+@app.route('/update_translation/<int:id>', methods=['POST'])
+def update_translation(id):
+    new_lang = request.form.get('new_lang')
+
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+
+    # Получаем исходный текст
+    cursor.execute('SELECT text_before FROM users WHERE id = %s', (id,))
+    result = cursor.fetchone()
+
+    if result:
+        text_before = result[0]
+        # Новый перевод
+        response = model.generate_content(
+            f"Переведи на {new_lang} следующий текст (в ответ напиши только перевод!): {text_before}"
+        )
+        new_translation = response.text
+
+        # Обновляем запись
+        cursor.execute('''
+            UPDATE users
+            SET lang = %s,
+                text_after = %s,
+                created_at = NOW()
+            WHERE id = %s
+        ''', (new_lang, new_translation, id))
+        conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for('history'))
 
 
 if __name__ == '__main__':
