@@ -23,14 +23,14 @@ def main():
 
         file= request.files['image']
         filename = file.filename
-        ext = os.path.splitext(filename)[1]  # расширение файла, включая точку
-        unique_filename = f"{uuid.uuid4().hex}{ext}"  # уникальное имя, например "4f3b9a2d8c7e4a1b8f3d.png"
+        ext = os.path.splitext(filename)[1]
+        unique_filename = f"{uuid.uuid4().hex}{ext}"
         UPLOAD_FOLDER = 'uploads'
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-        filepath= os.path.join(UPLOAD_FOLDER, unique_filename) # os.path.join склеивает в единый путь, с учётом операционной системы
+        filepath= os.path.join(UPLOAD_FOLDER, unique_filename)
         file.save(filepath)
 
-        photo_path = filepath.replace("\\", "/")  # для Windows
+        photo_path = filepath.replace("\\", "/")
 
 
         result = reader.readtext(filepath)
@@ -69,17 +69,17 @@ def delete_translation(id):
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
 
-    # Получаем путь к файлу
+
     cursor.execute('SELECT photo_path FROM users WHERE id = %s', (id,))
     result = cursor.fetchone()
 
     if result:
         photo_path = result[0]
-        # Удаляем запись из базы
+
         cursor.execute('DELETE FROM users WHERE id = %s', (id,))
         conn.commit()
 
-        # Удаляем файл, если он существует
+
         if os.path.exists(photo_path):
             os.remove(photo_path)
 
@@ -95,19 +95,19 @@ def update_translation(id):
     conn = mysql.connector.connect(**DB_CONFIG)
     cursor = conn.cursor()
 
-    # Получаем исходный текст
+
     cursor.execute('SELECT text_before FROM users WHERE id = %s', (id,))
     result = cursor.fetchone()
 
     if result:
         text_before = result[0]
-        # Новый перевод
+
         response = model.generate_content(
             f"Переведи на {new_lang} следующий текст (в ответ напиши только перевод!): {text_before}"
         )
         new_translation = response.text
 
-        # Обновляем запись
+
         cursor.execute('''
             UPDATE users
             SET lang = %s,
